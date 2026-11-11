@@ -5,7 +5,8 @@
 <div align="center">
 
 <!-- Tumhari Downloaded GIF -->
-<img src="giphy.gif" alt="Animated Flame" width="120"/>
+
+<img width="369" height="480" alt="giphy" src="https://github.com/user-attachments/assets/1fdaabf1-c07d-4d1b-8c15-2d8c83acf97d" />
 
 <h1>FLAME IN FREEFALL</h1>
 <h3><em>SI-Powered Fire Safety Insights from Microgravity Combustion Data</em></h3>
