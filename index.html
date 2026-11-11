@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="Flame in Freefall — Data-Powered Fire Safety Insights for the Artemis Era. NASA Space Apps Challenge 2026." />
+<title>Flame in Freefall — Fire Safety Insights</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="https://unpkg.com/lucide@0.454.0/dist/umd/lucide.min.js" defer></script>
+
+<link rel="stylesheet" href="style.css" />
+<script src="app.js" defer></script>
+</head>
+<body>
+
+<header class="hero" id="top">
+  <div class="starfield" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <span class="badge" aria-label="NASA Space Apps Challenge 2026">
+      <i data-lucide="rocket" aria-hidden="true"></i>
+      NASA Space Apps Challenge 2026
+    </span>
+    <h1 class="hero-title">Flame in Freefall</h1>
+    <p class="hero-sub">Data-Powered Fire Safety Insights for the Artemis Era</p>
+    <p class="hero-copy">
+      In microgravity there's no buoyancy — flames are <strong>spherical and blue</strong>, not teardrop-shaped. Traditional detection fails.
+      NASA's PSI database holds <strong>24 combustion experiments — 12 terabytes of data</strong> — but no mission engineer has time to read them all.
+      We turn that data into a decision tool for lunar habitats running <strong>30%+ O₂ at ≤10.2&nbsp;psi</strong> — over 40% more flammable than Earth.
+    </p>
+
+    <div class="stat-pills" id="statPills" aria-live="polite">
+      <div class="stat-pill"><span class="stat-num" data-count="0">0</span><span class="stat-label">Investigations</span></div>
+      <div class="stat-pill"><span class="stat-num" data-count="0">0</span><span class="stat-label">Samples</span></div>
+      <div class="stat-pill"><span class="stat-num" data-count="0">0%</span><span class="stat-label">Max O₂</span></div>
+      <div class="stat-pill"><span class="stat-num" data-count="0">0</span><span class="stat-label">Years Spanned</span></div>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#innovation-lab" class="btn btn-primary">
+        <i data-lucide="sparkles" aria-hidden="true"></i> See the Innovation Lab
+      </a>
+      <a href="#cardsRegion" class="btn btn-ghost">
+        <i data-lucide="layout-grid" aria-hidden="true"></i> Browse Experiments
+      </a>
+    </div>
+  </div>
+</header>
+
+<nav class="scenario-bar" aria-label="Scenario selector">
+  <div class="scenario-bar-inner">
+    <div class="scenario-pills" id="scenarioPills" role="tablist"></div>
+    <p class="scenario-context" id="scenarioContext" aria-live="polite">
+      Focus: ISS fire prevention, detection, suppression
+    </p>
+  </div>
+</nav>
+
+<main class="container">
+
+  <section id="innovation-lab" class="innovation-lab" aria-labelledby="lab-title">
+    <div class="lab-head">
+      <div>
+        <span class="lab-eyebrow"><i data-lucide="flask-conical" aria-hidden="true"></i> Innovation Lab</span>
+        <h2 id="lab-title">Beyond Dashboards: A Decision Tool</h2>
+        <p class="lab-sub">Five engines running live over the filtered dataset. Each one answers a question a real Artemis engineer would ask.</p>
+      </div>
+      <button class="btn btn-primary btn-lg" data-action="generate-brief" id="briefBtn">
+        <i data-lucide="file-text" aria-hidden="true"></i> Generate Mission Brief
+      </button>
+    </div>
+
+    <div class="lab-grid">
+
+      <article class="lab-card lab-card-gap">
+        <div class="lab-card-head">
+          <span class="lab-icon lab-icon-warn"><i data-lucide="alert-triangle" aria-hidden="true"></i></span>
+          <div>
+            <h3>Gap Analysis</h3>
+            <p>What's <em>not</em> tested for this mission?</p>
+          </div>
+        </div>
+        <div id="gapAnalysis" class="gap-list" aria-live="polite">
+          <div class="skeleton-mini"></div>
+          <div class="skeleton-mini"></div>
+        </div>
+      </article>
+
+      <article class="lab-card lab-card-priority">
+        <div class="lab-card-head">
+          <span class="lab-icon lab-icon-flame"><i data-lucide="target" aria-hidden="true"></i></span>
+          <div>
+            <h3>Test Priority Engine</h3>
+            <p>Where should NASA invest next?</p>
+          </div>
+        </div>
+        <div id="priorityEngine" class="priority-list" aria-live="polite">
+          <div class="skeleton-mini"></div>
+        </div>
+      </article>
+
+      <article class="lab-card lab-card-sandbox">
+        <div class="lab-card-head">
+          <span class="lab-icon lab-icon-cyan"><i data-lucide="sliders" aria-hidden="true"></i></span>
+          <div>
+            <h3>Predictive Fire Model</h3>
+            <p>Propagation, extinction &amp; risk from NASA experiments.</p>
+          </div>
+        </div>
+        <div class="sandbox">
+          <label class="slider-row">
+            <span>O₂ Concentration</span>
+            <input type="range" id="sandboxO2" min="15" max="100" value="30" aria-label="Oxygen concentration" />
+            <output id="sandboxO2Val">30%</output>
+          </label>
+          <label class="slider-row">
+            <span>Pressure</span>
+            <input type="range" id="sandboxPressure" min="3" max="15" step="0.1" value="10.2" aria-label="Pressure in psi" />
+            <output id="sandboxPressureVal">10.2 psi</output>
+          </label>
+          <label class="slider-row">
+            <span>Fuel Type</span>
+            <select id="sandboxFuel" aria-label="Fuel type">
+              <option value="liquid">Liquid</option>
+              <option value="solid">Solid</option>
+              <option value="gaseous">Gaseous</option>
+            </select>
+          </label>
+          <div id="sandboxVerdict" class="sandbox-verdict" aria-live="polite"></div>
+        </div>
+      </article>
+
+      <article class="lab-card lab-card-coverage">
+        <div class="lab-card-head">
+          <span class="lab-icon lab-icon-ok"><i data-lucide="map" aria-hidden="true"></i></span>
+          <div>
+            <h3>Research Coverage</h3>
+            <p>How well is this mission served?</p>
+          </div>
+        </div>
+        <div id="coverageMap" class="coverage-map" aria-live="polite"></div>
+      </article>
+
+      <article class="lab-card lab-card-design">
+        <div class="lab-card-head">
+          <span class="lab-icon lab-icon-design"><i data-lucide="wrench" aria-hidden="true"></i></span>
+          <div>
+            <h3>Equipment Design Recommendations</h3>
+            <p>Next-gen fire safety hardware — from NASA data.</p>
+          </div>
+        </div>
+        <div id="designRecs" class="design-recs" aria-live="polite">
+          <div class="skeleton-mini"></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section class="filters" aria-labelledby="filters-title">
+    <h2 id="filters-title" class="sr-only">Filters and search</h2>
+    <div class="filter-grid">
+      <label class="search-wrap">
+        <i data-lucide="search" aria-hidden="true"></i>
+        <input type="search" id="searchInput" placeholder="Search investigations, fuels, tags…" aria-label="Search investigations" />
+      </label>
+      <select id="fuelFilter" aria-label="Filter by fuel type"><option value="">All fuel types</option></select>
+      <select id="facilityFilter" aria-label="Filter by facility"><option value="">All facilities</option></select>
+      <select id="airflowFilter" aria-label="Filter by airflow"><option value="">All airflow</option></select>
+      <select id="gravityFilter" aria-label="Filter by gravity"><option value="">All gravity</option></select>
+      <button class="btn btn-ghost" data-action="reset-filters" aria-label="Reset all filters">
+        <i data-lucide="rotate-ccw" aria-hidden="true"></i> Reset
+      </button>
+    </div>
+    <p class="result-count" id="resultCount" aria-live="polite">Loading…</p>
+  </section>
+
+  <section id="cardsRegion" aria-live="polite" aria-busy="true">
+    <div class="card-grid" id="cardGrid"></div>
+    <div id="emptyState" class="empty-state hidden">
+      <i data-lucide="search-x" aria-hidden="true"></i>
+      <h3>No investigations match</h3>
+      <p>Try widening your filters, clearing search, or resetting.</p>
+      <button class="btn btn-primary" data-action="reset-filters">Reset filters</button>
+    </div>
+    <div id="errorState" class="empty-state hidden" role="alert">
+      <i data-lucide="alert-triangle" aria-hidden="true"></i>
+      <h3>Couldn't load data</h3>
+      <p id="errorMsg">The investigations JSON could not be fetched.</p>
+      <button class="btn btn-primary" data-action="retry-load">Retry</button>
+    </div>
+  </section>
+
+  <section class="analytics" aria-labelledby="analytics-title">
+    <div class="section-head">
+      <h2 id="analytics-title">Mission Analytics</h2>
+      <p>Aggregate views over the currently filtered set.</p>
+    </div>
+    <div class="analytics-grid">
+      <div class="chart-card"><h3>Fuel Type Mix</h3><canvas id="chartFuel" aria-label="Fuel type doughnut chart" role="img"></canvas></div>
+      <div class="chart-card"><h3>O₂ Coverage per Investigation</h3><canvas id="chartO2" aria-label="Oxygen coverage bar chart" role="img"></canvas></div>
+      <div class="chart-card"><h3>Scenario Relevance Coverage</h3><canvas id="chartScenario" aria-label="Scenario relevance horizontal bar chart" role="img"></canvas></div>
+      <div class="chart-card"><h3>Year vs Max O₂ (bubble = samples)</h3><canvas id="chartScatter" aria-label="Year versus oxygen scatter chart" role="img"></canvas></div>
+    </div>
+  </section>
+
+  <section class="si-panel" aria-labelledby="si-title">
+    <div class="section-head">
+      <h2 id="si-title"><i data-lucide="sparkles" aria-hidden="true"></i> Ask the Data</h2>
+      <p>Local rule-based retrieval. No API. No cloud. Never fails.</p>
+    </div>
+    <div class="si-input-wrap">
+      <input type="text" id="siInput" placeholder="e.g. Which experiment is best for lunar habitat fire safety?" aria-label="Ask the data" />
+      <button class="btn btn-primary" data-action="si-ask"><i data-lucide="send" aria-hidden="true"></i> Ask</button>
+    </div>
+    <div class="si-suggestions" id="siSuggestions"></div>
+    <div class="si-answers" id="siAnswers" aria-live="polite"></div>
+  </section>
+
+  <section class="spinoffs" aria-labelledby="spinoffs-title">
+    <div class="section-head">
+      <h2 id="spinoffs-title">Earth Spin-offs</h2>
+      <p>What microgravity fire science gives back to Earth — mapped to real products.</p>
+    </div>
+    <div class="spinoff-grid" id="spinoffGrid"></div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <strong>Flame in Freefall</strong>
+      <p>Built for the <a href="https://www.spaceappschallenge.org/" target="_blank" rel="noopener">NASA Space Apps Challenge 2026</a>.</p>
+    </div>
+    <div>
+      <p>Data source: <a href="https://psi.nasa.gov/" target="_blank" rel="noopener">NASA PSI Database</a> (public, 24 combustion experiments, ~12 TB). Values normalized for demo purposes — hackathon prototype, not flight-certified.</p>
+    </div>
+    <div>
+      <p>Team credits: <em>your names here</em> · Hackathon prototype · No warranty.</p>
+    </div>
+  </div>
+</footer>
+
+<div id="toastRoot" class="toast-root" aria-live="polite" aria-atomic="false"></div>
+
+<div class="modal-backdrop" id="detailBackdrop" hidden></div>
+<aside class="modal" id="detailModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+  <div class="modal-inner" id="modalBody"></div>
+</aside>
+
+<div class="modal-backdrop" id="compareBackdrop" hidden></div>
+<aside class="modal modal-compare" id="compareModal" role="dialog" aria-modal="true" aria-labelledby="compareTitle" hidden>
+  <div class="modal-inner" id="compareBody"></div>
+</aside>
+
+<div class="modal-backdrop" id="briefBackdrop" hidden></div>
+<aside class="modal modal-brief" id="briefModal" role="dialog" aria-modal="true" aria-labelledby="briefTitle" hidden>
+  <div class="modal-inner" id="briefBody"></div>
+</aside>
+
+<div class="compare-bar" id="compareBar" hidden>
+  <span id="compareBarText">0 selected</span>
+  <button class="btn btn-primary" id="compareBtn" data-action="open-compare" disabled>
+    <i data-lucide="git-compare" aria-hidden="true"></i> Compare selected
+  </button>
+  <button class="btn btn-ghost" data-action="clear-compare" aria-label="Clear comparison selection">
+    <i data-lucide="x" aria-hidden="true"></i>
+  </button>
+</div>
+
+</body>
+</html>
