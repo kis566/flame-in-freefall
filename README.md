@@ -7,8 +7,8 @@
 <!-- Tumhari Downloaded GIF -->
 <img src="https://raw.githubusercontent.com/kis566/flame-in-freefall/main/giphy.gif"
      alt="Flame in Freefall Animation"
-     width="100px"
-     hight="100px"
+     width="200px"
+     hight="200px"
      style="max-width:900px; border-radius:50px;">
 
 
